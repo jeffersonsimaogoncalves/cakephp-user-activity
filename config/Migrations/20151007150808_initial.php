@@ -57,6 +57,11 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
+            ->addColumn('primary_key', 'integer', [
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
             ->create();
 
         $table = $this->table('logs_details', ['id' => false, 'primary_key' => ['id', 'log_id']]);
