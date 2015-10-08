@@ -16,7 +16,7 @@
 
 namespace UserActivity\Controller;
 
-use Ace\Event\UserActivityListener;
+use UserActivity\Event\UserActivityListener;
 
 /**
  * Register User Activity Listener
