@@ -13,9 +13,9 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-namespace UserActivity\Model\Table;
+namespace Crabstudio\UserActivity\Model\Table;
 
-use UserActivity\Model\Entity\Log;
+use Crabstudio\UserActivity\Model\Entity\Log;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;

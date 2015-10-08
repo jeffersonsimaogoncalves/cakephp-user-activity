@@ -13,7 +13,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-namespace UserActivity\Event;
+namespace Crabstudio\UserActivity\Event;
 
 use ArrayObject;
 use Cake\Event\Event;

@@ -14,7 +14,7 @@
  */
 
 
-namespace UserActivity\Controller;
+namespace Crabstudio\UserActivity\Controller;
 
 use UserActivity\Event\UserActivityListener;
 

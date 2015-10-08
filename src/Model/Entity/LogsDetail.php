@@ -13,7 +13,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-namespace UserActivity\Model\Entity;
+namespace Crabstudio\UserActivity\Model\Entity;
 
 use Cake\ORM\Entity;
 
