@@ -1,6 +1,6 @@
 <?php
 /**
- * Crabstudio(tm): Cake bake ACE template (http://github.com/crabstudio/backend)
+ * Crabstudio(tm): Cake UserActivity logging plugin (http://github.com/crabstudio/UserActivity)
  * Copyright (c) Crabstudio. (http://crabstudio.info)
  *
  * Licensed under The MIT License
@@ -12,7 +12,7 @@
  * @since         0.1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
- 
+
 namespace UserActivity\Model\Entity;
 
 use Cake\ORM\Entity;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Crabstudio(tm): Cake bake ACE template (http://github.com/crabstudio/backend)
+ * Crabstudio(tm): Cake UserActivity logging plugin (http://github.com/crabstudio/UserActivity)
  * Copyright (c) Crabstudio. (http://crabstudio.info)
  *
  * Licensed under The MIT License
