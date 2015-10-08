@@ -113,9 +113,9 @@ class UserActivityListener implements EventListenerInterface {
         $log->logs_details = $listField;
         $log->recycle = false;
         $log->primary_key = $entity->id;
-        $log->description = __('User {0} was {1} successfully', $this->auth->user('email'), $entity->isNew() ? __('created') : __('updated') );
+        $log->description = __('{0} a record in {1} successfully', $entity->isNew() ? __('Create') : __('Update'), $entity->source() );
         if (!$Logs->save($log)) {
-            throw new \Cake\Database\Exception('Cannot log user activity');
+            throw new \Cake\Database\Exception('Cannot log create/update activity');
         }
     }
 
@@ -159,9 +159,9 @@ class UserActivityListener implements EventListenerInterface {
         $log->logs_details = $listField;
         $log->recycle = true;
         $log->primary_key = $entity->id;
-        $log->description = __('User {0} was soft deleted successfully', $this->auth->user('email'));
+        $log->description = __('Temporary deleted record {0} successfully', $entity->source());
         if (!$Logs->save($log)) {
-            throw new \Cake\Database\Exception('Cannot log activity');
+            throw new \Cake\Database\Exception('Cannot log delete activity');
         }
     }
 
