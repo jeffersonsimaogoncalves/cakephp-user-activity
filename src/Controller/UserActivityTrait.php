@@ -16,7 +16,7 @@
 
 namespace Crabstudio\UserActivity\Controller;
 
-use UserActivity\Event\UserActivityListener;
+use Crabstudio\UserActivity\Event\UserActivityListener;
 
 /**
  * Register User Activity Listener
