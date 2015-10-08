@@ -1,6 +1,6 @@
 {
     "name": "crabstudio/useractivity",
-    "description": "CakePHP 3 bake theme, integrated with Ace Admin template, UserActivityLogging, SoftDelete and restore a record",
+    "description": "CakePHP 3 UserActivity Logging plugin",
     "type": "cakephp-plugin",
     "license": "MIT",
     "keywords": ["cakephp3", "crabstudio", "user activity logging"],
@@ -12,8 +12,8 @@
     }],
     "support": [{
         "email": "anhtuank7c@hotmail.com",
-        "issues": "https://github.com/crabstudio/Ace/issues",
-        "source": "https://github.com/crabstudio/Ace"
+        "issues": "https://github.com/crabstudio/UserActivity/issues",
+        "source": "https://github.com/crabstudio/UserActivity"
     }],
     "require": {
         "php": ">=5.4.16",
@@ -24,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Crabstudio\\Ace\\": "src"
+            "Crabstudio\\UserActivity\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Crabstudio\\Ace\\Test\\": "tests",
+            "Crabstudio\\UserActivity\\Test\\": "tests",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
     },
