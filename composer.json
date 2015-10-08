@@ -1,0 +1,38 @@
+{
+    "name": "crabstudio/ace",
+    "description": "CakePHP 3 bake theme, integrated with Ace Admin template, UserActivityLogging, SoftDelete and restore a record",
+    "type": "cakephp-plugin",
+    "license": "MIT",
+    "keywords": ["cakephp3", "crabstudio", "bake template", "code generation tool", "anhtuank7c", "ace theme", "user activity logging"],
+    "time": "2015-09-24",
+    "authors": [{
+        "name": "anhtuank7c",
+        "email": "anhtuank7c@hotmail.com",
+        "homepage": "http://crabstudio.info"
+    }],
+    "support": [{
+        "email": "anhtuank7c@hotmail.com",
+        "issues": "https://github.com/crabstudio/Ace/issues",
+        "source": "https://github.com/crabstudio/Ace"
+    }],
+    "require": {
+        "php": ">=5.4.16",
+        "cakephp/cakephp": "~3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Crabstudio\\Ace\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Crabstudio\\Ace\\Test\\": "tests",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
