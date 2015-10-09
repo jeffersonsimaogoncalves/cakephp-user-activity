@@ -78,7 +78,7 @@ class UserActivityListener implements EventListenerInterface {
         /**
          * Log all visible properties
          */
-        if (!empty($entity->visibleProperties())) {
+        if (sizeof($entity->visibleProperties()) > 0) {
             foreach ($entity->visibleProperties() as $key => $property) {
                 if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
                     continue;
@@ -93,7 +93,7 @@ class UserActivityListener implements EventListenerInterface {
         /**
          * Log all invisible properties
          */
-        if (!empty($entity->hiddenProperties())) {
+        if (sizeof($entity->hiddenProperties()) > 0) {
             foreach ($entity->hiddenProperties() as $key => $property) {
                 if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
                     continue;
@@ -131,7 +131,7 @@ class UserActivityListener implements EventListenerInterface {
         /**
          * Log all visible properties
          */
-        if (!empty($entity->visibleProperties())) {
+        if (sizeof($entity->visibleProperties()) > 0) {
             foreach ($entity->visibleProperties() as $key => $property) {
                 $field = $Logs->LogsDetails->newEntity();
                 $field->field_name = $property;
@@ -143,7 +143,7 @@ class UserActivityListener implements EventListenerInterface {
         /**
          * Log all invisible properties
          */
-        if (!empty($entity->hiddenProperties())) {
+        if (sizeof($entity->hiddenProperties()) > ) {
             foreach ($entity->hiddenProperties() as $key => $property) {
                 $field = $Logs->LogsDetails->newEntity();
                 $field->field_name = $property;
