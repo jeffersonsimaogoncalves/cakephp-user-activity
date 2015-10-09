@@ -13,14 +13,14 @@ if (!function_exists('log_activity')) {
             return false;
         }
         $Logs = Cake\ORM\TableRegistry::get('Logs');
-        $log = $Logs->newEntity();
-        $log->table_name = $log['table_name'];
-        $log->action = $log['action'];
-        $log->created_by = $log['created_by'];
-        $log->recycle = false;
-        $log->primary_key = $log['primary_key'];
-        $log->description = $log['description'];
-        if (!$Logs->save($log)) {
+        $logObj = $Logs->newEntity();
+        $logObj->table_name = $log['table_name'];
+        $logObj->action = $log['action'];
+        $logObj->created_by = $log['created_by'];
+        $logObj->recycle = false;
+        $logObj->primary_key = $log['primary_key'];
+        $logObj->description = $log['description'];
+        if (!$Logs->save($logObj)) {
             return false;
         }
         return true;
