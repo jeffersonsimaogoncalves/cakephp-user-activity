@@ -143,7 +143,7 @@ class UserActivityListener implements EventListenerInterface {
         /**
          * Log all invisible properties
          */
-        if (sizeof($entity->hiddenProperties()) > ) {
+        if (sizeof($entity->hiddenProperties()) > 0) {
             foreach ($entity->hiddenProperties() as $key => $property) {
                 $field = $Logs->LogsDetails->newEntity();
                 $field->field_name = $property;
