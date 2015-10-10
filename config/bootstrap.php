@@ -3,8 +3,7 @@
 if (!function_exists('log_activity')) {
 
     /**
-     * log[table_name, action, created_by, primary_key, description]
-     * @param array $log
+     * @param array $log[table_name, action, created_by, primary_key, description]
      * @return void, if cannot write to logs table, log file will be used
      * @throws \Cake\Database\Exception
      */
@@ -21,7 +20,7 @@ if (!function_exists('log_activity')) {
         $logObj->primary_key = $log['primary_key'];
         $logObj->description = $log['description'];
         if (!$Logs->save($logObj)) {
-            \Cake\Log\Log::alert(__('Cannot write user login activity to logs: {0}', implode(',', $log)))
+            \Cake\Log\Log::alert(__('Cannot write user login activity to logs: {0}', implode(',', $log)));
         }
     }
 
