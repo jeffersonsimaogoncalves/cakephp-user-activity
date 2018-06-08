@@ -22,5 +22,4 @@ class Plugin extends BasePlugin
 {
     protected $routesEnabled = false;
     protected $middlewareEnabled = false;
-    protected $consoleEnabled = false;
 }
