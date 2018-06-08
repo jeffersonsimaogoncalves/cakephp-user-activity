@@ -1,38 +1,38 @@
 {
-    "name": "crabstudio/useractivity",
-    "description": "CakePHP 3 UserActivity Logging plugin",
-    "type": "cakephp-plugin",
-    "license": "MIT",
-    "keywords": ["cakephp3", "crabstudio", "user activity logging"],
-    "time": "2015-09-24",
-    "authors": [{
-        "name": "anhtuank7c",
-        "email": "anhtuank7c@hotmail.com",
-        "homepage": "http://crabstudio.info"
-    }],
-    "support": [{
-        "email": "anhtuank7c@hotmail.com",
-        "issues": "https://github.com/crabstudio/UserActivity/issues",
-        "source": "https://github.com/crabstudio/UserActivity"
-    }],
-    "require": {
-        "php": ">=5.4.16",
-        "cakephp/cakephp": "~3.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "*"
-    },
-    "autoload": {
-        "psr-4": {
-            "Crabstudio\\UserActivity\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Crabstudio\\UserActivity\\Test\\": "tests",
-            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+  "name": "jeffersonsimaogoncalves/cakephp-user-activity",
+  "description": "CakePHP 3 UserActivity Logging plugin",
+  "type": "cakephp-plugin",
+  "license": "MIT",
+  "keywords": [
+    "cakephp3",
+    "crabstudio",
+    "user activity logging"
+  ],
+  "time": "2015-09-24",
+  "authors": [
+    {
+      "name": "anhtuank7c",
+      "email": "anhtuank7c@hotmail.com",
+      "homepage": "http://crabstudio.info"
+    }
+  ],
+  "support": {
+    "email": "gerson.simao.92@gmail.com",
+    "issues": "https://github.com/jeffersonsimaogoncalves/cakephp-user-activity/issues",
+    "source": "https://github.com/jeffersonsimaogoncalves/cakephp-user-activity"
+  },
+  "require": {
+    "php": ">=7",
+    "cakephp/cakephp": "^3.6"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "JeffersonSimaoGoncalves\\UserActivity\\": "src"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

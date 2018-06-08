@@ -14,24 +14,33 @@
  */
 
 
-namespace Crabstudio\UserActivity\Controller;
+namespace JeffersonSimaoGoncalves\UserActivity\Controller;
 
-use Crabstudio\UserActivity\Event\UserActivityListener;
+use JeffersonSimaoGoncalves\UserActivity\Event\UserActivityListener;
 
 /**
- * Register User Activity Listener
+ * Trait UserActivityTrait
+ *
+ * @author Jefferson Simão Gonçalves <gerson.simao.92@gmail.com>
+ *
+ * @mixin \Cake\Controller\Controller
+ *
+ * @package JeffersonSimaoGoncalves\UserActivity\Controller
  */
-trait UserActivityTrait {
-
+trait UserActivityTrait
+{
     /**
-     * 
-     * @param type $modelClass
-     * @param type $type
-     * @return model
+     * @param string|null $modelClass
+     * @param string|null $modelType
+     *
+     * @return \Cake\Datasource\RepositoryInterface
      */
-    public function loadModel($modelClass = null, $type = 'Table') {
-        $model = parent::loadModel($modelClass, $type);
-        $model->eventManager()->on(new UserActivityListener($this->Auth));
+    public function loadModel($modelClass = null, $modelType = null)
+    {
+        /** @var \Cake\ORM\Table $model */
+        $model = parent::loadModel($modelClass, $modelType);
+        $model->getEventManager()->on(new UserActivityListener($this->Auth));
+
         return $model;
     }
 

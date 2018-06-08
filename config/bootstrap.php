@@ -3,15 +3,16 @@
 if (!function_exists('log_activity')) {
 
     /**
-     * @param array $log[table_name, action, created_by, primary_key, description]
-     * @return void, if cannot write to logs table, log file will be used
-     * @throws \Cake\Database\Exception
+     * @param array $log
+     *
+     * @throws \Aura\Intl\Exception
      */
-    function log_activity(array $log) {
+    function log_activity(array $log)
+    {
         if (empty($log)) {
             return;
         }
-        $Logs = Cake\ORM\TableRegistry::get('Logs');
+        $Logs = Cake\ORM\TableRegistry::getTableLocator()->get('Logs');
         $logObj = $Logs->newEntity();
         $logObj->table_name = $log['table_name'];
         $logObj->action = $log['action'];
