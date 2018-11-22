@@ -39,7 +39,7 @@ trait UserActivityTrait
     {
         /** @var \Cake\ORM\Table $model */
         $model = parent::loadModel($modelClass, $modelType);
-        $model->getEventManager()->on(new UserActivityListener($this->Auth));
+        $model->getEventManager()->on(new UserActivityListener($this->getRequest()->getSession()->read('Auth.User')));
 
         return $model;
     }
