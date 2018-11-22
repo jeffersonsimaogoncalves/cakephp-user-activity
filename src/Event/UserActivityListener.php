@@ -1,17 +1,4 @@
 <?php
-/**
- * Crabstudio(tm): Cake UserActivity logging plugin (http://github.com/crabstudio/UserActivity)
- * Copyright (c) Crabstudio. (http://crabstudio.info)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Crabstudio. (http://crabstudio.info)
- * @link          http://github.com/crabstudio/backend Project
- * @since         0.1.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
- */
 
 namespace JeffersonSimaoGoncalves\UserActivity\Event;
 
@@ -22,8 +9,14 @@ use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 
 /**
+ * Class UserActivityListener
+ *
  * User Activity Listener set created_by, modified_by when beforeSave event was fired
  * Write to logs when afterSaveCommit, afterDeleteCommit event was fired
+ *
+ * @author Jefferson Simão Gonçalves <gerson.simao.92@gmail.com>
+ *
+ * @package JeffersonSimaoGoncalves\UserActivity\Event
  */
 class UserActivityListener implements EventListenerInterface
 {
@@ -123,17 +116,30 @@ class UserActivityListener implements EventListenerInterface
 
         $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
 
-        $log = $Logs->newEntity();
-        $log->table_name = $entity->getSource();
-        $log->database_name = $database;
+        $query = $Logs->find('all')->where(['primary_key' => $entity->id, 'database_name' => $database, 'table_name' => $entity->getSource()]);
+
+        $log = $query->first();
+
+        if ($entity->isNew() || is_null($log)) {
+            $log = $Logs->newEntity();
+            $log->table_name = $entity->getSource();
+            $log->database_name = $database;
+            $log->primary_key = $entity->id;
+        }
+
         $log->action = $entity->isNew() ? 'C' : 'U';
         $log->created_by = $this->user['id'];
-        $log->logs_details = $listField;
         $log->recycle = false;
-        $log->primary_key = $entity->id;
         $log->description = __('{0} a record in {1} successfully', $entity->isNew() ? __('Create') : __('Update'), $entity->getSource());
+
         if (!$Logs->save($log)) {
             throw new \Cake\Database\Exception('Cannot log create/update activity');
+        }
+
+        foreach ($listField as $field) {
+            /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */
+            $field->log_id = $log->id;
+            $LogsDetails->save($field);
         }
     }
 
@@ -182,17 +188,28 @@ class UserActivityListener implements EventListenerInterface
 
         $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
 
-        $log = $Logs->newEntity();
+        $query = $Logs->find('all')->where(['primary_key' => $entity->id, 'database_name' => $database, 'table_name' => $entity->getSource()]);
+
+        $log = $query->first();
+
+        if (is_null($log)) {
+            $log = $Logs->newEntity();
+        }
+
         $log->table_name = $entity->getSource();
         $log->database_name = $database;
         $log->action = 'D';
         $log->created_by = $this->user['id'];
-        $log->logs_details = $listField;
         $log->recycle = true;
         $log->primary_key = $entity->id;
         $log->description = __('Temporary deleted record {0} successfully', $entity->getSource());
         if (!$Logs->save($log)) {
             throw new \Cake\Database\Exception('Cannot log delete activity');
+        }
+        foreach ($listField as $field) {
+            /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */
+            $field->log_id = $log->id;
+            $LogsDetails->save($field);
         }
     }
 
