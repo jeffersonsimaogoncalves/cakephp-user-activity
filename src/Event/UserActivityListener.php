@@ -26,6 +26,10 @@ class UserActivityListener implements EventListenerInterface
         'JeffersonSimaoGoncalves\\UserActivity\\Model\\Entity\\LogsDetail',
         'Settings\\Model\\Entity\\Configuration',
     ];
+    private $ignoreFields = [
+        'created',
+        'modified',
+    ];
 
     public function implementedEvents()
     {
@@ -66,14 +70,16 @@ class UserActivityListener implements EventListenerInterface
              */
             if (sizeof($entity->visibleProperties()) > 0) {
                 foreach ($entity->visibleProperties() as $key => $property) {
-                    if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
-                        continue;
+                    if (!in_array($property, $this->ignoreFields)) {
+                        if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
+                            continue;
+                        }
+                        $field = $LogsDetails->newEntity();
+                        $field->field_name = $property;
+                        $field->new_value = $entity->get($property);
+                        $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
+                        array_push($listField, $field);
                     }
-                    $field = $LogsDetails->newEntity();
-                    $field->field_name = $property;
-                    $field->new_value = $entity->get($property);
-                    $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
-                    array_push($listField, $field);
                 }
             }
             /**
@@ -81,14 +87,16 @@ class UserActivityListener implements EventListenerInterface
              */
             if (sizeof($entity->getHidden()) > 0) {
                 foreach ($entity->getHidden() as $key => $property) {
-                    if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
-                        continue;
+                    if (!in_array($property, $this->ignoreFields)) {
+                        if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
+                            continue;
+                        }
+                        $field = $LogsDetails->newEntity();
+                        $field->field_name = $property;
+                        $field->new_value = $entity->get($property);
+                        $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
+                        array_push($listField, $field);
                     }
-                    $field = $LogsDetails->newEntity();
-                    $field->field_name = $property;
-                    $field->new_value = $entity->get($property);
-                    $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
-                    array_push($listField, $field);
                 }
             }
 
@@ -147,11 +155,13 @@ class UserActivityListener implements EventListenerInterface
              */
             if (sizeof($entity->visibleProperties()) > 0) {
                 foreach ($entity->visibleProperties() as $key => $property) {
-                    $field = $LogsDetails->newEntity();
-                    $field->field_name = $property;
-                    $field->new_value = null;
-                    $field->old_value = $entity->isNew() ? null : $entity->get($property);
-                    array_push($listField, $field);
+                    if (!in_array($property, $this->ignoreFields)) {
+                        $field = $LogsDetails->newEntity();
+                        $field->field_name = $property;
+                        $field->new_value = null;
+                        $field->old_value = $entity->isNew() ? null : $entity->get($property);
+                        array_push($listField, $field);
+                    }
                 }
             }
             /**
@@ -159,11 +169,13 @@ class UserActivityListener implements EventListenerInterface
              */
             if (sizeof($entity->getHidden()) > 0) {
                 foreach ($entity->getHidden() as $key => $property) {
-                    $field = $LogsDetails->newEntity();
-                    $field->field_name = $property;
-                    $field->new_value = null;
-                    $field->old_value = $entity->isNew() ? null : $entity->get($property);
-                    array_push($listField, $field);
+                    if (!in_array($property, $this->ignoreFields)) {
+                        $field = $LogsDetails->newEntity();
+                        $field->field_name = $property;
+                        $field->new_value = null;
+                        $field->old_value = $entity->isNew() ? null : $entity->get($property);
+                        array_push($listField, $field);
+                    }
                 }
             }
 
