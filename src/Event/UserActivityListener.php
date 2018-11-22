@@ -84,7 +84,6 @@ class UserActivityListener implements EventListenerInterface
                     if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
                         continue;
                     }
-                    $entity->get($property);
                     $field = $LogsDetails->newEntity();
                     $field->field_name = $property;
                     $field->new_value = $entity->get($property);
@@ -98,7 +97,7 @@ class UserActivityListener implements EventListenerInterface
 
             $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
 
-            $query = $Logs->find('all')->where(['primary_key' => $entity->id, 'database_name' => $database, 'table_name' => $entity->getSource()]);
+            $query = $Logs->find('all')->where(['action' => $entity->isNew() ? 'C' : 'U', 'primary_key' => $entity->id, 'database_name' => $database, 'table_name' => $entity->getSource()]);
 
             $log = $query->first();
 
@@ -173,7 +172,7 @@ class UserActivityListener implements EventListenerInterface
 
             $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
 
-            $query = $Logs->find('all')->where(['primary_key' => $entity->id, 'database_name' => $database, 'table_name' => $entity->getSource()]);
+            $query = $Logs->find('all')->where(['action' => 'D', 'primary_key' => $entity->id, 'database_name' => $database, 'table_name' => $entity->getSource()]);
 
             $log = $query->first();
 
