@@ -73,7 +73,7 @@ class UserActivityListener implements EventListenerInterface
     public function afterSaveCommit(Event $event, Entity $entity, ArrayObject $options)
     {
         TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
-        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
+        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
         /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsTable $Logs */
         $Logs = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.Logs');
         /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
@@ -120,7 +120,7 @@ class UserActivityListener implements EventListenerInterface
 
         $log = $query->first();
 
-        if ($entity->isNew() || is_null($log)) {
+        if (is_null($log)) {
             $log = $Logs->newEntity();
             $log->table_name = $entity->getSource();
             $log->database_name = $database;
@@ -152,7 +152,7 @@ class UserActivityListener implements EventListenerInterface
     public function afterDeleteCommit(Event $event, Entity $entity, ArrayObject $options)
     {
         TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
-        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
+        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
         /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsTable $Logs */
         $Logs = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.Logs');
         /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
