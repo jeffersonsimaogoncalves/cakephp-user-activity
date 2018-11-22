@@ -16,7 +16,6 @@
 namespace JeffersonSimaoGoncalves\UserActivity\Event;
 
 use ArrayObject;
-use Cake\Controller\Component\AuthComponent;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Entity;
@@ -28,12 +27,12 @@ use Cake\ORM\TableRegistry;
  */
 class UserActivityListener implements EventListenerInterface
 {
-    /** @var \Cake\Controller\Component\AuthComponent */
-    protected $auth;
+    /** @var array */
+    protected $user;
 
-    public function __construct(AuthComponent $auth)
+    public function __construct(array $user)
     {
-        $this->auth = $auth;
+        $this->user = $user;
     }
 
     public function implementedEvents()
@@ -64,9 +63,9 @@ class UserActivityListener implements EventListenerInterface
     public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
     {
         if ($entity->isNew()) {
-            $entity->set('created_by', $this->auth->user('id'));
+            $entity->set('created_by', $this->user['id']);
         } else {
-            $entity->set('modified_by', $this->auth->user('id'));
+            $entity->set('modified_by', $this->user['id']);
         }
     }
 
