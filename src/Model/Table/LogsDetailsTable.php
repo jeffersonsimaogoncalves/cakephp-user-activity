@@ -16,7 +16,6 @@
 namespace JeffersonSimaoGoncalves\UserActivity\Model\Table;
 
 use Cake\Core\Configure;
-use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -120,18 +119,5 @@ class LogsDetailsTable extends Table
         $rules->add($rules->existsIn(['log_id'], 'Logs'));
 
         return $rules;
-    }
-
-    /**
-     * @param \Cake\Database\Schema\TableSchema $schema
-     *
-     * @return \Cake\Database\Schema\TableSchema
-     */
-    protected function _initializeSchema(TableSchema $schema)
-    {
-        $schema->setColumnType('new_value', 'json');
-        $schema->setColumnType('old_value', 'json');
-
-        return parent::_initializeSchema($schema);
     }
 }
