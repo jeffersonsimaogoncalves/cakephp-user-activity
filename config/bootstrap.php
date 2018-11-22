@@ -1,11 +1,15 @@
 <?php
 
 use Cake\Core\Configure;
+use Cake\Event\EventManager;
+use JeffersonSimaoGoncalves\UserActivity\Event\UserActivityListener;
 
 // Optionally load additional queue config defaults from local app config
 if (file_exists(ROOT . DS . 'config' . DS . 'app_user_activity.php')) {
     Configure::load('app_user_activity');
 }
+
+EventManager::instance()->on(new UserActivityListener());
 
 if (!function_exists('log_activity')) {
 

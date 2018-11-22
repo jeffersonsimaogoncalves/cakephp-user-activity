@@ -20,21 +20,9 @@ use Cake\ORM\TableRegistry;
  */
 class UserActivityListener implements EventListenerInterface
 {
-    /** @var array */
-    protected $user;
-
-    public function __construct(array $user)
-    {
-        $this->user = $user;
-    }
-
     public function implementedEvents()
     {
         return [
-            'Model.beforeSave'        => [
-                'callable' => 'beforeSave',
-                'priority' => -100,
-            ],
             'Model.afterSaveCommit'   => [
                 'callable' => 'afterSaveCommit',
                 'priority' => -100,
@@ -44,22 +32,6 @@ class UserActivityListener implements EventListenerInterface
                 'priority' => -100,
             ],
         ];
-    }
-
-    /**
-     * Do set created_by and modified_by
-     *
-     * @param Event $event
-     * @param Entity $entity
-     * @param ArrayObject $options
-     */
-    public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
-    {
-        if ($entity->isNew()) {
-            $entity->set('created_by', $this->user['id']);
-        } else {
-            $entity->set('modified_by', $this->user['id']);
-        }
     }
 
     /**
