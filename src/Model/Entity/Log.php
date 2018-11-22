@@ -26,7 +26,7 @@ use Cake\ORM\Entity;
  * @property string $primary_key
  * @property string $action
  * @property \Cake\I18n\Time $created
- * @property int $created_by
+ * @property string $created_by
  * @property string $operation_type
  * @property string $description
  * @property bool $recycle
