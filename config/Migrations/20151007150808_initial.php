@@ -73,14 +73,12 @@ class Initial extends AbstractMigration
                 'limit'   => 64,
                 'null'    => true,
             ])
-            ->addColumn('new_value', 'string', [
+            ->addColumn('new_value', 'text', [
                 'default' => null,
-                'limit'   => 128,
                 'null'    => true,
             ])
-            ->addColumn('old_value', 'string', [
+            ->addColumn('old_value', 'text', [
                 'default' => null,
-                'limit'   => 128,
                 'null'    => true,
             ])
             ->addColumn('created', 'timestamp', [
