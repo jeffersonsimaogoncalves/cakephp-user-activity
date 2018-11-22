@@ -75,6 +75,7 @@ class LogsTable extends Table
             'foreignKey'       => 'log_id',
             'dependent'        => true,
             'cascadeCallbacks' => true,
+            'className'        => 'JeffersonSimaoGoncalves/UserActivity.LogsDetails',
         ]);
     }
 

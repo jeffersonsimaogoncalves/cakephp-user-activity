@@ -24,7 +24,7 @@ use Cake\Validation\Validator;
  * LogsDetails Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Logs
- * 
+ *
  * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail get($primaryKey, $options = [])
  * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail newEntity($data = null, array $options = [])
  * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail[] newEntities(array $data, array $options = [])
@@ -74,6 +74,7 @@ class LogsDetailsTable extends Table
         $this->belongsTo('Logs', [
             'foreignKey' => 'log_id',
             'joinType'   => 'INNER',
+            'className'  => 'JeffersonSimaoGoncalves/UserActivity.Logs',
         ]);
     }
 
