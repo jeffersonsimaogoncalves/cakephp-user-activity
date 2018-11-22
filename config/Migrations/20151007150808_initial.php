@@ -28,11 +28,6 @@ class Initial extends AbstractMigration
                 'limit'   => null,
                 'null'    => true,
             ])
-            ->addColumn('created_by', 'string', [
-                'default' => null,
-                'limit'   => 50,
-                'null'    => false,
-            ])
             ->addColumn('operation_type', 'string', [
                 'default' => null,
                 'limit'   => 8,

@@ -105,11 +105,6 @@ class LogsTable extends Table
             ->notEmpty('action');
 
         $validator
-            ->add('created_by', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('created_by', 'create')
-            ->notEmpty('created_by');
-
-        $validator
             ->requirePresence('description', 'create')
             ->notEmpty('description');
 

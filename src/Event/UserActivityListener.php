@@ -100,7 +100,6 @@ class UserActivityListener implements EventListenerInterface
         }
 
         $log->action = $entity->isNew() ? 'C' : 'U';
-        $log->created_by = $this->user['id'];
         $log->recycle = false;
         $log->description = __('{0} a record in {1} successfully', $entity->isNew() ? __('Create') : __('Update'), $entity->getSource());
 
@@ -171,7 +170,6 @@ class UserActivityListener implements EventListenerInterface
         $log->table_name = $entity->getSource();
         $log->database_name = $database;
         $log->action = 'D';
-        $log->created_by = $this->user['id'];
         $log->recycle = true;
         $log->primary_key = $entity->id;
         $log->description = __('Temporary deleted record {0} successfully', $entity->getSource());
