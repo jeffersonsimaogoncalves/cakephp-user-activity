@@ -65,6 +65,7 @@ class UserActivityListener implements EventListenerInterface
             /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
             $LogsDetails = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
             $listField = [];
+            $fields = [];
             /**
              * Log all visible properties
              */
@@ -79,6 +80,7 @@ class UserActivityListener implements EventListenerInterface
                         $field->new_value = $entity->get($property);
                         $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
                         array_push($listField, $field);
+                        array_push($fields, $property);
                     }
                 }
             }
@@ -91,11 +93,13 @@ class UserActivityListener implements EventListenerInterface
                         if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
                             continue;
                         }
-                        $field = $LogsDetails->newEntity();
-                        $field->field_name = $property;
-                        $field->new_value = $entity->get($property);
-                        $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
-                        array_push($listField, $field);
+                        if (!in_array($property, $fields)) {
+                            $field = $LogsDetails->newEntity();
+                            $field->field_name = $property;
+                            $field->new_value = $entity->get($property);
+                            $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
+                            array_push($listField, $field);
+                        }
                     }
                 }
             }
@@ -150,6 +154,7 @@ class UserActivityListener implements EventListenerInterface
             /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
             $LogsDetails = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
             $listField = [];
+            $fields = [];
             /**
              * Log all visible properties
              */
@@ -161,6 +166,7 @@ class UserActivityListener implements EventListenerInterface
                         $field->new_value = null;
                         $field->old_value = $entity->isNew() ? null : $entity->get($property);
                         array_push($listField, $field);
+                        array_push($fields, $property);
                     }
                 }
             }
@@ -169,7 +175,7 @@ class UserActivityListener implements EventListenerInterface
              */
             if (sizeof($entity->getHidden()) > 0) {
                 foreach ($entity->getHidden() as $key => $property) {
-                    if (!in_array($property, $this->ignoreFields)) {
+                    if (!in_array($property, $this->ignoreFields) && !in_array($property, $fields)) {
                         $field = $LogsDetails->newEntity();
                         $field->field_name = $property;
                         $field->new_value = null;
