@@ -49,7 +49,7 @@ class LogsDetailsTable extends Table
         $connection = Configure::read('JeffersonSimaoGoncalves/UserActivity.connection');
         if (!empty($connection)) {
             return $connection;
-        };
+        }
 
         return parent::defaultConnectionName();
     }
