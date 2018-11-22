@@ -124,7 +124,7 @@ class UserActivityListener implements EventListenerInterface
         $log->table_name = $entity->getSource();
         $log->database_name = $database;
         $log->action = $entity->isNew() ? 'C' : 'U';
-        $log->created_by = $this->auth->user('id');
+        $log->created_by = $this->user['id'];
         $log->logs_details = $listField;
         $log->recycle = false;
         $log->primary_key = $entity->id;
@@ -180,7 +180,7 @@ class UserActivityListener implements EventListenerInterface
         $log->table_name = $entity->getSource();
         $log->database_name = $database;
         $log->action = 'D';
-        $log->created_by = $this->auth->user('id');
+        $log->created_by = $this->user['id'];
         $log->logs_details = $listField;
         $log->recycle = true;
         $log->primary_key = $entity->id;
