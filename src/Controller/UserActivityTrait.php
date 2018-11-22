@@ -33,7 +33,7 @@ trait UserActivityTrait
      * @param string|null $modelClass
      * @param string|null $modelType
      *
-     * @return \Cake\Datasource\RepositoryInterface
+     * @return \Cake\ORM\Table
      */
     public function loadModel($modelClass = null, $modelType = null)
     {

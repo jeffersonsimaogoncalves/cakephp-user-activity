@@ -4,15 +4,13 @@ if (!function_exists('log_activity')) {
 
     /**
      * @param array $log
-     *
-     * @throws \Aura\Intl\Exception
      */
     function log_activity(array $log)
     {
         if (empty($log)) {
             return;
         }
-        $Logs = Cake\ORM\TableRegistry::getTableLocator()->get('Logs');
+        $Logs = Cake\ORM\TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.Logs');
         $logObj = $Logs->newEntity();
         $logObj->table_name = $log['table_name'];
         $logObj->action = $log['action'];

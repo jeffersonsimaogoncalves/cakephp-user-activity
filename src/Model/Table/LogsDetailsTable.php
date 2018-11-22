@@ -15,8 +15,7 @@
 
 namespace JeffersonSimaoGoncalves\UserActivity\Model\Table;
 
-use JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail;
-use Cake\ORM\Query;
+use Cake\Core\Configure;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -25,29 +24,56 @@ use Cake\Validation\Validator;
  * LogsDetails Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Logs
+ * 
+ * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail get($primaryKey, $options = [])
+ * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail newEntity($data = null, array $options = [])
+ * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail[] newEntities(array $data, array $options = [])
+ * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail[] patchEntities($entities, array $data, array $options = [])
+ * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class LogsDetailsTable extends Table
 {
 
     /**
+     * set connection name
+     *
+     * @return string
+     */
+    public static function defaultConnectionName()
+    {
+        $connection = Configure::read('JeffersonSimaoGoncalves/UserActivity.connection');
+        if (!empty($connection)) {
+            return $connection;
+        };
+
+        return parent::defaultConnectionName();
+    }
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
+     *
      * @return void
      */
     public function initialize(array $config)
     {
         parent::initialize($config);
 
-        $this->table('logs_details');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('logs_details');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('Logs', [
             'foreignKey' => 'log_id',
-            'joinType' => 'INNER'
+            'joinType'   => 'INNER',
         ]);
     }
 
@@ -55,6 +81,7 @@ class LogsDetailsTable extends Table
      * Default validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
+     *
      * @return \Cake\Validation\Validator
      */
     public function validationDefault(Validator $validator)
@@ -83,11 +110,13 @@ class LogsDetailsTable extends Table
      * application integrity.
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     *
      * @return \Cake\ORM\RulesChecker
      */
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['log_id'], 'Logs'));
+
         return $rules;
     }
 }

@@ -22,7 +22,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $log_id
- * @property \App\Model\Entity\Log $log
+ * @property \JeffersonSimaoGoncalves\UserActivity\Model\Entity\Log $log
  * @property string $object_file
  * @property string $field_name
  * @property string $new_value
@@ -42,7 +42,7 @@ class LogsDetail extends Entity
      * @var array
      */
     protected $_accessible = [
-        '*' => true,
+        '*'  => true,
         'id' => false,
     ];
 }

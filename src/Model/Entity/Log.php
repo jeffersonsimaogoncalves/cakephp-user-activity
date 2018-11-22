@@ -22,17 +22,15 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $table_name
+ * @property string $database_name
+ * @property string $primary_key
  * @property string $action
  * @property \Cake\I18n\Time $created
  * @property int $created_by
- * @property string $memberid
- * @property int $transaction_id
- * @property \App\Model\Entity\Transaction $transaction
- * @property string $product_id
- * @property \App\Model\Entity\Product $product
  * @property string $operation_type
  * @property string $description
- * @property \App\Model\Entity\LogsDetail[] $logs_details
+ * @property bool $recycle
+ * @property \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail[] $logs_details
  */
 class Log extends Entity
 {
@@ -47,7 +45,7 @@ class Log extends Entity
      * @var array
      */
     protected $_accessible = [
-        '*' => true,
+        '*'  => true,
         'id' => false,
     ];
 }

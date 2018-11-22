@@ -16,49 +16,54 @@
 namespace JeffersonSimaoGoncalves\UserActivity\Event;
 
 use ArrayObject;
-use Cake\Event\Event;
-use Cake\ORM\Entity;
-use Cake\Event\EventListenerInterface;
 use Cake\Controller\Component\AuthComponent;
+use Cake\Event\Event;
+use Cake\Event\EventListenerInterface;
+use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 
 /**
  * User Activity Listener set created_by, modified_by when beforeSave event was fired
  * Write to logs when afterSaveCommit, afterDeleteCommit event was fired
  */
-class UserActivityListener implements EventListenerInterface {
-
+class UserActivityListener implements EventListenerInterface
+{
+    /** @var \Cake\Controller\Component\AuthComponent */
     protected $auth;
 
-    public function __construct(AuthComponent $auth) {
+    public function __construct(AuthComponent $auth)
+    {
         $this->auth = $auth;
     }
 
-    public function implementedEvents() {
+    public function implementedEvents()
+    {
         return [
-            'Model.beforeSave' => [
+            'Model.beforeSave'        => [
                 'callable' => 'beforeSave',
-                'priority' => -100
+                'priority' => -100,
             ],
-            'Model.afterSaveCommit' => [
+            'Model.afterSaveCommit'   => [
                 'callable' => 'afterSaveCommit',
-                'priority' => -100
+                'priority' => -100,
             ],
             'Model.afterDeleteCommit' => [
                 'callable' => 'afterDeleteCommit',
-                'priority' => -100
-            ]
+                'priority' => -100,
+            ],
         ];
     }
 
     /**
      * Do set created_by and modified_by
+     *
      * @param Event $event
      * @param Entity $entity
      * @param ArrayObject $options
      */
-    public function beforeSave(Event $event, Entity $entity, ArrayObject $options) {
-        if($entity->isNew()) {
+    public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
+    {
+        if ($entity->isNew()) {
             $entity->set('created_by', $this->auth->user('id'));
         } else {
             $entity->set('modified_by', $this->auth->user('id'));
@@ -66,14 +71,18 @@ class UserActivityListener implements EventListenerInterface {
     }
 
     /**
-     * 
+     *
      * @param Event $event
      * @param Entity $entity
      * @param ArrayObject $options
+     *
      * @throws \Cake\Database\Exception
      */
-    public function afterSaveCommit(Event $event, Entity $entity, ArrayObject $options) {
-        $Logs = TableRegistry::get('Logs');
+    public function afterSaveCommit(Event $event, Entity $entity, ArrayObject $options)
+    {
+        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
+        /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsTable $Logs */
+        $Logs = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.Logs');
         $listField = [];
         /**
          * Log all visible properties
@@ -93,8 +102,8 @@ class UserActivityListener implements EventListenerInterface {
         /**
          * Log all invisible properties
          */
-        if (sizeof($entity->hiddenProperties()) > 0) {
-            foreach ($entity->hiddenProperties() as $key => $property) {
+        if (sizeof($entity->getHidden()) > 0) {
+            foreach ($entity->getHidden() as $key => $property) {
                 if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
                     continue;
                 }
@@ -106,27 +115,37 @@ class UserActivityListener implements EventListenerInterface {
                 array_push($listField, $field);
             }
         }
+
+        $configLog = $Logs->getConnection()->config();
+        $configEntity = TableRegistry::getTableLocator()->get($entity->getSource())->getConnection()->config();
+
+        $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
+
         $log = $Logs->newEntity();
-        $log->table_name = $entity->source();
+        $log->table_name = $entity->getSource();
+        $log->database_name = $database;
         $log->action = $entity->isNew() ? 'C' : 'U';
         $log->created_by = $this->auth->user('id');
         $log->logs_details = $listField;
         $log->recycle = false;
         $log->primary_key = $entity->id;
-        $log->description = __('{0} a record in {1} successfully', $entity->isNew() ? __('Create') : __('Update'), $entity->source() );
+        $log->description = __('{0} a record in {1} successfully', $entity->isNew() ? __('Create') : __('Update'), $entity->getSource());
         if (!$Logs->save($log)) {
             throw new \Cake\Database\Exception('Cannot log create/update activity');
         }
     }
 
     /**
-     * 
+     *
      * @param Event $event
      * @param Entity $entity
      * @param ArrayObject $options
      */
-    public function afterDeleteCommit(Event $event, Entity $entity, ArrayObject $options) {
-        $Logs = TableRegistry::get('Logs');
+    public function afterDeleteCommit(Event $event, Entity $entity, ArrayObject $options)
+    {
+        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
+        /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsTable $Logs */
+        $Logs = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.Logs');
         $listField = [];
         /**
          * Log all visible properties
@@ -143,8 +162,8 @@ class UserActivityListener implements EventListenerInterface {
         /**
          * Log all invisible properties
          */
-        if (sizeof($entity->hiddenProperties()) > 0) {
-            foreach ($entity->hiddenProperties() as $key => $property) {
+        if (sizeof($entity->getHidden()) > 0) {
+            foreach ($entity->getHidden() as $key => $property) {
                 $field = $Logs->LogsDetails->newEntity();
                 $field->field_name = $property;
                 $field->new_value = null;
@@ -152,14 +171,21 @@ class UserActivityListener implements EventListenerInterface {
                 array_push($listField, $field);
             }
         }
+
+        $configLog = $Logs->getConnection()->config();
+        $configEntity = TableRegistry::getTableLocator()->get($entity->getSource())->getConnection()->config();
+
+        $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
+
         $log = $Logs->newEntity();
-        $log->table_name = $entity->source();
+        $log->table_name = $entity->getSource();
+        $log->database_name = $database;
         $log->action = 'D';
         $log->created_by = $this->auth->user('id');
         $log->logs_details = $listField;
         $log->recycle = true;
         $log->primary_key = $entity->id;
-        $log->description = __('Temporary deleted record {0} successfully', $entity->source());
+        $log->description = __('Temporary deleted record {0} successfully', $entity->getSource());
         if (!$Logs->save($log)) {
             throw new \Cake\Database\Exception('Cannot log delete activity');
         }
