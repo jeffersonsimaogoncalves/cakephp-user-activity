@@ -132,18 +132,14 @@ class UserActivityListener implements EventListenerInterface
             $log->description = __('{0} a record in {1} successfully', $entity->isNew() ? __('Create') : __('Update'), $entity->getSource());
 
             if (!$Logs->save($log)) {
-                throw new \Cake\Database\Exception('Cannot log create/update activity');
+                foreach ($listField as $field) {
+                    /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */
+                    $field->log_id = $log->id;
+                    $LogsDetails->save($field);
+                }
             }
-
-            foreach ($listField as $field) {
-                /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */
-                $field->log_id = $log->id;
-                $LogsDetails->save($field);
-            }
-            $event->stopPropagation();
-        } else {
-            $event->stopPropagation();
         }
+        $event->stopPropagation();
     }
 
     /**
@@ -206,18 +202,15 @@ class UserActivityListener implements EventListenerInterface
             $log->recycle = true;
             $log->primary_key = $entity->id;
             $log->description = __('Temporary deleted record {0} successfully', $entity->getSource());
-            if (!$Logs->save($log)) {
-                throw new \Cake\Database\Exception('Cannot log delete activity');
+            if ($Logs->save($log)) {
+                foreach ($listField as $field) {
+                    /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */
+                    $field->log_id = $log->id;
+                    $LogsDetails->save($field);
+                }
             }
-            foreach ($listField as $field) {
-                /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */
-                $field->log_id = $log->id;
-                $LogsDetails->save($field);
-            }
-            $event->stopPropagation();
-        } else {
-            $event->stopPropagation();
         }
+        $event->stopPropagation();
     }
 
 }
