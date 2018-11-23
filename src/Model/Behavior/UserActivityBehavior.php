@@ -52,27 +52,6 @@ class UserActivityBehavior extends Behavior
     }
 
     /**
-     * @return array
-     */
-    public function implementedEvents()
-    {
-        return [
-            'Model.beforeSave'        => [
-                'callable' => 'beforeSave',
-                'priority' => -100,
-            ],
-            'Model.afterSaveCommit'   => [
-                'callable' => 'afterSaveCommit',
-                'priority' => -100,
-            ],
-            'Model.afterDeleteCommit' => [
-                'callable' => 'afterDeleteCommit',
-                'priority' => -100,
-            ],
-        ];
-    }
-
-    /**
      * Do set created_by and modified_by
      *
      * @param \Cake\Event\Event $event
