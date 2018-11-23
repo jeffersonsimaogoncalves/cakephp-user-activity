@@ -87,7 +87,10 @@ class UserActivityBehavior extends Behavior
         /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
         $LogsDetails = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
         $listField = [];
-        $fields = TableRegistry::getTableLocator()->get($entity->getSource())->getSchema()->columns();
+        $tableEntity = TableRegistry::getTableLocator()->get($entity->getSource());
+        $fields = $tableEntity->getSchema()->columns();
+        $primaryKey = $tableEntity->getSchema()->primaryKey();
+        $primary_key = [];
         /**
          * Log all visible properties
          */
@@ -106,6 +109,10 @@ class UserActivityBehavior extends Behavior
             }
         }
 
+        foreach ($primaryKey as $pk) {
+            $primary_key[$pk] = $entity->get($pk);
+        }
+
         $configLog = $Logs->getConnection()->config();
         $configEntity = TableRegistry::getTableLocator()->get($entity->getSource())->getConnection()->config();
 
@@ -114,7 +121,7 @@ class UserActivityBehavior extends Behavior
         $log = $Logs->newEntity();
         $log->table_name = $entity->getSource();
         $log->database_name = $database;
-        $log->primary_key = $entity->id;
+        $log->primary_key = json_encode($primary_key);
         $log->action = $entity->isNew() ? 'C' : 'U';
         $log->created_by = $this->getId();
         $log->name = $this->getName();
@@ -156,7 +163,10 @@ class UserActivityBehavior extends Behavior
         /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
         $LogsDetails = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
         $listField = [];
-        $fields = TableRegistry::getTableLocator()->get($entity->getSource())->getSchema()->columns();
+        $tableEntity = TableRegistry::getTableLocator()->get($entity->getSource());
+        $fields = $tableEntity->getSchema()->columns();
+        $primaryKey = $tableEntity->getSchema()->primaryKey();
+        $primary_key = [];
         /**
          * Log all visible properties
          */
@@ -172,6 +182,10 @@ class UserActivityBehavior extends Behavior
             }
         }
 
+        foreach ($primaryKey as $pk) {
+            $primary_key[$pk] = $entity->get($pk);
+        }
+
         $configLog = $Logs->getConnection()->config();
         $configEntity = TableRegistry::getTableLocator()->get($entity->getSource())->getConnection()->config();
 
@@ -184,7 +198,7 @@ class UserActivityBehavior extends Behavior
         $log->created_by = $this->getId();
         $log->name = $this->getName();
         $log->recycle = true;
-        $log->primary_key = $entity->id;
+        $log->primary_key = json_encode($primary_key);
         $log->description = __('Temporary deleted record {0} successfully', $entity->getSource());
         if ($Logs->save($log)) {
             foreach ($listField as $field) {

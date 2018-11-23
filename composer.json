@@ -26,7 +26,8 @@
   },
   "require": {
     "php": ">=7",
-    "cakephp/cakephp": "^3.6"
+    "cakephp/cakephp": "^3.6",
+    "ext-json": "@stable"
   },
   "require-dev": {
     "phpunit/phpunit": "*",
