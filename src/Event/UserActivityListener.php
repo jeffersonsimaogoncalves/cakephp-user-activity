@@ -97,12 +97,12 @@ class UserActivityListener implements EventListenerInterface
             /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
             $LogsDetails = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
             $listField = [];
-            $fields = [];
+            $fields = TableRegistry::getTableLocator()->get($entity->getSource())->getSchema()->columns();
             /**
              * Log all visible properties
              */
-            if (sizeof($entity->visibleProperties()) > 0) {
-                foreach ($entity->visibleProperties() as $key => $property) {
+            if (count($fields) > 0) {
+                foreach ($fields as $key => $property) {
                     if (!in_array($property, $this->ignoreFields)) {
                         if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
                             continue;
@@ -112,26 +112,6 @@ class UserActivityListener implements EventListenerInterface
                         $field->new_value = $entity->get($property);
                         $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
                         array_push($listField, $field);
-                        $fields[] = $property;
-                    }
-                }
-            }
-            /**
-             * Log all invisible properties
-             */
-            if (sizeof($entity->getHidden()) > 0) {
-                foreach ($entity->getHidden() as $key => $property) {
-                    if (!in_array($property, $this->ignoreFields)) {
-                        if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
-                            continue;
-                        }
-                        if (!in_array($property, $fields)) {
-                            $field = $LogsDetails->newEntity();
-                            $field->field_name = $property;
-                            $field->new_value = $entity->get($property);
-                            $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
-                            array_push($listField, $field);
-                        }
                     }
                 }
             }
@@ -193,35 +173,18 @@ class UserActivityListener implements EventListenerInterface
             /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
             $LogsDetails = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
             $listField = [];
-            $fields = [];
+            $fields = TableRegistry::getTableLocator()->get($entity->getSource())->getSchema()->columns();
             /**
              * Log all visible properties
              */
-            if (sizeof($entity->visibleProperties()) > 0) {
-                foreach ($entity->visibleProperties() as $key => $property) {
+            if (count($fields) > 0) {
+                foreach ($fields as $key => $property) {
                     if (!in_array($property, $this->ignoreFields)) {
                         $field = $LogsDetails->newEntity();
                         $field->field_name = $property;
                         $field->new_value = null;
                         $field->old_value = $entity->isNew() ? null : $entity->get($property);
                         array_push($listField, $field);
-                        $fields[] = $property;
-                    }
-                }
-            }
-            /**
-             * Log all invisible properties
-             */
-            if (sizeof($entity->getHidden()) > 0) {
-                foreach ($entity->getHidden() as $key => $property) {
-                    if (!in_array($property, $this->ignoreFields)) {
-                        if (!in_array($property, $fields)) {
-                            $field = $LogsDetails->newEntity();
-                            $field->field_name = $property;
-                            $field->new_value = null;
-                            $field->old_value = $entity->isNew() ? null : $entity->get($property);
-                            array_push($listField, $field);
-                        }
                     }
                 }
             }
