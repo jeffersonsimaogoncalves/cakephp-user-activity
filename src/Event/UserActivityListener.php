@@ -131,7 +131,7 @@ class UserActivityListener implements EventListenerInterface
             $log->recycle = false;
             $log->description = __('{0} a record in {1} successfully', $entity->isNew() ? __('Create') : __('Update'), $entity->getSource());
 
-            if (!$Logs->save($log)) {
+            if ($Logs->save($log)) {
                 foreach ($listField as $field) {
                     /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */
                     $field->log_id = $log->id;
