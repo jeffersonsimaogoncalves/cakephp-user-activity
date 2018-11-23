@@ -27,15 +27,6 @@ class UserActivityBehavior extends Behavior
     /**
      * @var array
      */
-    private $ignoreClass = [
-        'DatabaseLog\\Model\\Entity\\DatabaseLog',
-        'JeffersonSimaoGoncalves\\UserActivity\\Model\\Entity\\Log',
-        'JeffersonSimaoGoncalves\\UserActivity\\Model\\Entity\\LogsDetail',
-        'Settings\\Model\\Entity\\Configuration',
-    ];
-    /**
-     * @var array
-     */
     private $ignoreFields = [
         'created',
         'modified',
@@ -87,61 +78,56 @@ class UserActivityBehavior extends Behavior
      *
      * @throws \Cake\Database\Exception
      */
-    public function afterSaveCommit(Event $event, Entity $entity, ArrayObject $options)
+    public function afterSave(Event $event, Entity $entity, ArrayObject $options)
     {
-        $class = get_class($entity);
-
-        if (!in_array($class, $this->ignoreClass)) {
-            TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
-            TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
-            /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsTable $Logs */
-            $Logs = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.Logs');
-            /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
-            $LogsDetails = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
-            $listField = [];
-            $fields = TableRegistry::getTableLocator()->get($entity->getSource())->getSchema()->columns();
-            /**
-             * Log all visible properties
-             */
-            if (count($fields) > 0) {
-                foreach ($fields as $key => $property) {
-                    if (!in_array($property, $this->ignoreFields)) {
-                        if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
-                            continue;
-                        }
-                        $field = $LogsDetails->newEntity();
-                        $field->field_name = $property;
-                        $field->new_value = $entity->get($property);
-                        $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
-                        array_push($listField, $field);
+        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
+        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
+        /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsTable $Logs */
+        $Logs = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.Logs');
+        /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
+        $LogsDetails = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
+        $listField = [];
+        $fields = TableRegistry::getTableLocator()->get($entity->getSource())->getSchema()->columns();
+        /**
+         * Log all visible properties
+         */
+        if (count($fields) > 0) {
+            foreach ($fields as $key => $property) {
+                if (!in_array($property, $this->ignoreFields)) {
+                    if ($entity->getOriginal($property) === $entity->get($property) && !$entity->isNew()) {
+                        continue;
                     }
-                }
-            }
-
-            $configLog = $Logs->getConnection()->config();
-            $configEntity = TableRegistry::getTableLocator()->get($entity->getSource())->getConnection()->config();
-
-            $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
-
-            $log = $Logs->newEntity();
-            $log->table_name = $entity->getSource();
-            $log->database_name = $database;
-            $log->primary_key = $entity->id;
-            $log->action = $entity->isNew() ? 'C' : 'U';
-            $log->created_by = $this->getId();
-            $log->name = $this->getName();
-            $log->recycle = false;
-            $log->description = __('{0} a record in {1} successfully', $entity->isNew() ? __('Create') : __('Update'), $entity->getSource());
-
-            if ($Logs->save($log)) {
-                foreach ($listField as $field) {
-                    /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */
-                    $field->log_id = $log->id;
-                    $LogsDetails->save($field);
+                    $field = $LogsDetails->newEntity();
+                    $field->field_name = $property;
+                    $field->new_value = $entity->get($property);
+                    $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
+                    array_push($listField, $field);
                 }
             }
         }
-        $event->stopPropagation();
+
+        $configLog = $Logs->getConnection()->config();
+        $configEntity = TableRegistry::getTableLocator()->get($entity->getSource())->getConnection()->config();
+
+        $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
+
+        $log = $Logs->newEntity();
+        $log->table_name = $entity->getSource();
+        $log->database_name = $database;
+        $log->primary_key = $entity->id;
+        $log->action = $entity->isNew() ? 'C' : 'U';
+        $log->created_by = $this->getId();
+        $log->name = $this->getName();
+        $log->recycle = false;
+        $log->description = __('{0} a record in {1} successfully', $entity->isNew() ? __('Create') : __('Update'), $entity->getSource());
+
+        if ($Logs->save($log)) {
+            foreach ($listField as $field) {
+                /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */
+                $field->log_id = $log->id;
+                $LogsDetails->save($field);
+            }
+        }
     }
 
     /**
@@ -161,56 +147,51 @@ class UserActivityBehavior extends Behavior
      * @param \Cake\ORM\Entity $entity
      * @param \ArrayObject $options
      */
-    public function afterDeleteCommit(Event $event, Entity $entity, ArrayObject $options)
+    public function afterDelete(Event $event, Entity $entity, ArrayObject $options)
     {
-        $class = get_class($entity);
-
-        if (!in_array($class, $this->ignoreClass)) {
-            TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
-            TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
-            /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsTable $Logs */
-            $Logs = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.Logs');
-            /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
-            $LogsDetails = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
-            $listField = [];
-            $fields = TableRegistry::getTableLocator()->get($entity->getSource())->getSchema()->columns();
-            /**
-             * Log all visible properties
-             */
-            if (count($fields) > 0) {
-                foreach ($fields as $key => $property) {
-                    if (!in_array($property, $this->ignoreFields)) {
-                        $field = $LogsDetails->newEntity();
-                        $field->field_name = $property;
-                        $field->new_value = null;
-                        $field->old_value = $entity->isNew() ? null : $entity->get($property);
-                        array_push($listField, $field);
-                    }
-                }
-            }
-
-            $configLog = $Logs->getConnection()->config();
-            $configEntity = TableRegistry::getTableLocator()->get($entity->getSource())->getConnection()->config();
-
-            $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
-
-            $log = $Logs->newEntity();
-            $log->table_name = $entity->getSource();
-            $log->database_name = $database;
-            $log->action = 'D';
-            $log->created_by = $this->getId();
-            $log->name = $this->getName();
-            $log->recycle = true;
-            $log->primary_key = $entity->id;
-            $log->description = __('Temporary deleted record {0} successfully', $entity->getSource());
-            if ($Logs->save($log)) {
-                foreach ($listField as $field) {
-                    /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */
-                    $field->log_id = $log->id;
-                    $LogsDetails->save($field);
+        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
+        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
+        /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsTable $Logs */
+        $Logs = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.Logs');
+        /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
+        $LogsDetails = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
+        $listField = [];
+        $fields = TableRegistry::getTableLocator()->get($entity->getSource())->getSchema()->columns();
+        /**
+         * Log all visible properties
+         */
+        if (count($fields) > 0) {
+            foreach ($fields as $key => $property) {
+                if (!in_array($property, $this->ignoreFields)) {
+                    $field = $LogsDetails->newEntity();
+                    $field->field_name = $property;
+                    $field->new_value = null;
+                    $field->old_value = $entity->isNew() ? null : $entity->get($property);
+                    array_push($listField, $field);
                 }
             }
         }
-        $event->stopPropagation();
+
+        $configLog = $Logs->getConnection()->config();
+        $configEntity = TableRegistry::getTableLocator()->get($entity->getSource())->getConnection()->config();
+
+        $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
+
+        $log = $Logs->newEntity();
+        $log->table_name = $entity->getSource();
+        $log->database_name = $database;
+        $log->action = 'D';
+        $log->created_by = $this->getId();
+        $log->name = $this->getName();
+        $log->recycle = true;
+        $log->primary_key = $entity->id;
+        $log->description = __('Temporary deleted record {0} successfully', $entity->getSource());
+        if ($Logs->save($log)) {
+            foreach ($listField as $field) {
+                /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */
+                $field->log_id = $log->id;
+                $LogsDetails->save($field);
+            }
+        }
     }
 }
