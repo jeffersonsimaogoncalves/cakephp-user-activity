@@ -29,6 +29,8 @@ class UserActivityListener implements EventListenerInterface
     private $ignoreFields = [
         'created',
         'modified',
+        'created_by',
+        'modified_by',
     ];
 
     public function implementedEvents()
