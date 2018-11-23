@@ -8,7 +8,6 @@
     "crabstudio",
     "user activity logging"
   ],
-  "time": "2015-09-24",
   "authors": [
     {
       "name": "anhtuank7c",
@@ -30,7 +29,8 @@
     "cakephp/cakephp": "^3.6"
   },
   "require-dev": {
-    "phpunit/phpunit": "*"
+    "phpunit/phpunit": "*",
+    "cakephp/migrations": "1.8.1"
   },
   "autoload": {
     "psr-4": {

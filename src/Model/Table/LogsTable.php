@@ -97,7 +97,6 @@ class LogsTable extends Table
             ->notEmpty('table_name');
 
         $validator
-            ->requirePresence('database_name', 'create')
             ->allowEmpty('database_name');
 
         $validator
@@ -112,6 +111,12 @@ class LogsTable extends Table
             ->add('recycle', 'valid', ['rule' => 'boolean'])
             ->requirePresence('recycle', 'create')
             ->notEmpty('recycle');
+
+        $validator
+            ->allowEmpty('created_by');
+
+        $validator
+            ->allowEmpty('name');
 
         return $validator;
     }

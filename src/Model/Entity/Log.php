@@ -28,6 +28,8 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time $created
  * @property string $operation_type
  * @property string $description
+ * @property string $created_by
+ * @property string $name
  * @property bool $recycle
  * @property \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail[] $logs_details
  */

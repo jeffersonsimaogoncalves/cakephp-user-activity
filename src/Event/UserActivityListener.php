@@ -34,6 +34,10 @@ class UserActivityListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
+            'Model.beforeSave'        => [
+                'callable' => 'beforeSave',
+                'priority' => -100,
+            ],
             'Model.afterSaveCommit'   => [
                 'callable' => 'afterSaveCommit',
                 'priority' => -100,
@@ -43,6 +47,34 @@ class UserActivityListener implements EventListenerInterface
                 'priority' => -100,
             ],
         ];
+    }
+
+    /**
+     * Do set created_by and modified_by
+     *
+     * @param Event $event
+     * @param Entity $entity
+     * @param ArrayObject $options
+     */
+    public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
+    {
+        if ($entity->isNew()) {
+            $entity->set('created_by', $this->getId());
+        } else {
+            $entity->set('modified_by', $this->getId());
+        }
+    }
+
+    /**
+     * @return string|null
+     */
+    private function getId()
+    {
+        if (function_exists('getUserAuth')) {
+            return getUserAuth('id');
+        }
+
+        return null;
     }
 
     /**
@@ -80,7 +112,7 @@ class UserActivityListener implements EventListenerInterface
                         $field->new_value = $entity->get($property);
                         $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
                         array_push($listField, $field);
-                        array_push($fields, $property);
+                        $fields[] = $property;
                     }
                 }
             }
@@ -109,18 +141,13 @@ class UserActivityListener implements EventListenerInterface
 
             $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
 
-            $query = $Logs->find('all')->where(['action' => $entity->isNew() ? 'C' : 'U', 'primary_key' => $entity->id, 'database_name' => $database, 'table_name' => $entity->getSource()]);
-
-            $log = $query->first();
-
-            if (is_null($log)) {
-                $log = $Logs->newEntity();
-                $log->table_name = $entity->getSource();
-                $log->database_name = $database;
-                $log->primary_key = $entity->id;
-            }
-
+            $log = $Logs->newEntity();
+            $log->table_name = $entity->getSource();
+            $log->database_name = $database;
+            $log->primary_key = $entity->id;
             $log->action = $entity->isNew() ? 'C' : 'U';
+            $log->created_by = $this->getId();
+            $log->name = $this->getName();
             $log->recycle = false;
             $log->description = __('{0} a record in {1} successfully', $entity->isNew() ? __('Create') : __('Update'), $entity->getSource());
 
@@ -134,6 +161,18 @@ class UserActivityListener implements EventListenerInterface
                 $LogsDetails->save($field);
             }
         }
+    }
+
+    /**
+     * @return string|null
+     */
+    private function getName()
+    {
+        if (function_exists('getUserAuth')) {
+            return getUserAuth('name');
+        }
+
+        return null;
     }
 
     /**
@@ -166,7 +205,7 @@ class UserActivityListener implements EventListenerInterface
                         $field->new_value = null;
                         $field->old_value = $entity->isNew() ? null : $entity->get($property);
                         array_push($listField, $field);
-                        array_push($fields, $property);
+                        $fields[] = $property;
                     }
                 }
             }
@@ -175,12 +214,14 @@ class UserActivityListener implements EventListenerInterface
              */
             if (sizeof($entity->getHidden()) > 0) {
                 foreach ($entity->getHidden() as $key => $property) {
-                    if (!in_array($property, $this->ignoreFields) && !in_array($property, $fields)) {
-                        $field = $LogsDetails->newEntity();
-                        $field->field_name = $property;
-                        $field->new_value = null;
-                        $field->old_value = $entity->isNew() ? null : $entity->get($property);
-                        array_push($listField, $field);
+                    if (!in_array($property, $this->ignoreFields)) {
+                        if (!in_array($property, $fields)) {
+                            $field = $LogsDetails->newEntity();
+                            $field->field_name = $property;
+                            $field->new_value = null;
+                            $field->old_value = $entity->isNew() ? null : $entity->get($property);
+                            array_push($listField, $field);
+                        }
                     }
                 }
             }
@@ -190,17 +231,12 @@ class UserActivityListener implements EventListenerInterface
 
             $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
 
-            $query = $Logs->find('all')->where(['action' => 'D', 'primary_key' => $entity->id, 'database_name' => $database, 'table_name' => $entity->getSource()]);
-
-            $log = $query->first();
-
-            if (is_null($log)) {
-                $log = $Logs->newEntity();
-            }
-
+            $log = $Logs->newEntity();
             $log->table_name = $entity->getSource();
             $log->database_name = $database;
             $log->action = 'D';
+            $log->created_by = $this->getId();
+            $log->name = $this->getName();
             $log->recycle = true;
             $log->primary_key = $entity->id;
             $log->description = __('Temporary deleted record {0} successfully', $entity->getSource());
