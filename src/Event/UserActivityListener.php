@@ -140,6 +140,9 @@ class UserActivityListener implements EventListenerInterface
                 $field->log_id = $log->id;
                 $LogsDetails->save($field);
             }
+            $event->stopPropagation();
+        } else {
+            $event->stopPropagation();
         }
     }
 
@@ -211,6 +214,9 @@ class UserActivityListener implements EventListenerInterface
                 $field->log_id = $log->id;
                 $LogsDetails->save($field);
             }
+            $event->stopPropagation();
+        } else {
+            $event->stopPropagation();
         }
     }
 
