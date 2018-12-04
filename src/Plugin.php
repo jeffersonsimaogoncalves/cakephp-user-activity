@@ -1,6 +1,5 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: Jefferson Simão Gonçalves
  * Email: gerson.simao.92@gmail.com
  * Date: 08/06/2018
