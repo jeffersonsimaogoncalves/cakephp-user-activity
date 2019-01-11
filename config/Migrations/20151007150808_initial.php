@@ -2,7 +2,8 @@
 
 use Migrations\AbstractMigration;
 
-class Initial extends AbstractMigration
+class InitialUserActivity
+    extends AbstractMigration
 {
     public function up()
     {
@@ -97,9 +98,9 @@ class Initial extends AbstractMigration
     public function down()
     {
         $this->table('logs_details')
-            ->dropForeignKey(
-                'log_id'
-            );
+             ->dropForeignKey(
+                 'log_id'
+             );
 
         $this->dropTable('logs');
         $this->dropTable('logs_details');
