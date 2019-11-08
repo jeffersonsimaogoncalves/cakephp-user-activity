@@ -88,20 +88,20 @@ class LogsDetailsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->integer('id')
+            ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->allowEmpty('object_file');
+            ->allowEmptyString('object_file');
 
         $validator
-            ->allowEmpty('field_name');
+            ->allowEmptyString('field_name');
 
         $validator
-            ->allowEmpty('new_value');
+            ->allowEmptyString('new_value');
 
         $validator
-            ->allowEmpty('old_value');
+            ->allowEmptyString('old_value');
 
         return $validator;
     }

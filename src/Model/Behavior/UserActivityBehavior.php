@@ -79,8 +79,10 @@ class UserActivityBehavior extends Behavior
      */
     public function afterSave(Event $event, Entity $entity, ArrayObject $options)
     {
-        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
-        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
+        TableRegistry::getTableLocator()
+            ->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
+        TableRegistry::getTableLocator()
+            ->remove('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
         /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsTable $Logs */
         $Logs = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.Logs');
         /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
@@ -101,8 +103,16 @@ class UserActivityBehavior extends Behavior
                     }
                     $field = $LogsDetails->newEntity();
                     $field->field_name = $property;
-                    $field->new_value = $entity->get($property);
-                    $field->old_value = $entity->isNew() ? null : $entity->getOriginal($property);
+                    if ($tableEntity->getSchema()->getColumnType($property) === 'json') {
+                        $field->new_value = json_encode($entity->get($property));
+                    } else {
+                        $field->new_value = $entity->get($property);
+                    }
+                    if ($tableEntity->getSchema()->getColumnType($property) === 'json') {
+                        $field->old_value = $entity->isNew() ? null : json_encode($entity->get($property));
+                    } else {
+                        $field->old_value = $entity->isNew() ? null : $entity->get($property);
+                    }
                     array_push($listField, $field);
                 }
             }
@@ -125,7 +135,7 @@ class UserActivityBehavior extends Behavior
         $log->created_by = $this->getId();
         $log->name = $this->getName();
         $log->recycle = false;
-        $log->description = __('{0} a record in {1} successfully', $entity->isNew() ? __('Create') : __('Update'), $entity->getSource());
+        $log->description = __('{0} um registro em {1} com sucesso', $entity->isNew() ? __('Criado') : __('Atualizado'), $entity->getSource());
 
         if ($Logs->save($log)) {
             foreach ($listField as $field) {
@@ -155,8 +165,10 @@ class UserActivityBehavior extends Behavior
      */
     public function afterDelete(Event $event, Entity $entity, ArrayObject $options)
     {
-        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
-        TableRegistry::getTableLocator()->remove('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
+        TableRegistry::getTableLocator()
+            ->remove('JeffersonSimaoGoncalves/UserActivity.Logs');
+        TableRegistry::getTableLocator()
+            ->remove('JeffersonSimaoGoncalves/UserActivity.LogsDetails');
         /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsTable $Logs */
         $Logs = TableRegistry::getTableLocator()->get('JeffersonSimaoGoncalves/UserActivity.Logs');
         /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable $LogsDetails */
@@ -175,7 +187,11 @@ class UserActivityBehavior extends Behavior
                     $field = $LogsDetails->newEntity();
                     $field->field_name = $property;
                     $field->new_value = null;
-                    $field->old_value = $entity->isNew() ? null : $entity->get($property);
+                    if ($tableEntity->getSchema()->getColumnType($property) === 'json') {
+                        $field->old_value = $entity->isNew() ? null : json_encode($entity->get($property));
+                    } else {
+                        $field->old_value = $entity->isNew() ? null : $entity->get($property);
+                    }
                     array_push($listField, $field);
                 }
             }
@@ -186,7 +202,9 @@ class UserActivityBehavior extends Behavior
         }
 
         $configLog = $Logs->getConnection()->config();
-        $configEntity = TableRegistry::getTableLocator()->get($entity->getSource())->getConnection()->config();
+        $configEntity = TableRegistry::getTableLocator()->get($entity->getSource())
+            ->getConnection()
+            ->config();
 
         $database = isset($configEntity['database']) ? $configEntity['database'] : $configLog['database'];
 
@@ -198,7 +216,7 @@ class UserActivityBehavior extends Behavior
         $log->name = $this->getName();
         $log->recycle = true;
         $log->primary_key = json_encode($primary_key);
-        $log->description = __('Temporary deleted record {0} successfully', $entity->getSource());
+        $log->description = __('Registro excluído temporário {0} com êxito', $entity->getSource());
         if ($Logs->save($log)) {
             foreach ($listField as $field) {
                 /** @var \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail $field */

@@ -89,34 +89,34 @@ class LogsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->integer('id')
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->requirePresence('table_name', 'create')
-            ->notEmpty('table_name');
+            ->notEmptyString('table_name');
 
         $validator
-            ->allowEmpty('database_name');
+            ->allowEmptyString('database_name');
 
         $validator
             ->requirePresence('action', 'create')
-            ->notEmpty('action');
+            ->notEmptyString('action');
 
         $validator
             ->requirePresence('description', 'create')
-            ->notEmpty('description');
+            ->notEmptyString('description');
 
         $validator
             ->add('recycle', 'valid', ['rule' => 'boolean'])
             ->requirePresence('recycle', 'create')
-            ->notEmpty('recycle');
+            ->notEmptyString('recycle');
 
         $validator
-            ->allowEmpty('created_by');
+            ->allowEmptyString('created_by');
 
         $validator
-            ->allowEmpty('name');
+            ->allowEmptyString('name');
 
         return $validator;
     }
