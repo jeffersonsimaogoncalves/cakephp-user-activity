@@ -16,23 +16,25 @@
 namespace JeffersonSimaoGoncalves\UserActivity\Model\Table;
 
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use JeffersonSimaoGoncalves\UserActivity\Model\Entity\Log;
 
 /**
  * Logs Model
  *
  * @property \JeffersonSimaoGoncalves\UserActivity\Model\Table\LogsDetailsTable|\Cake\ORM\Association\HasMany $LogsDetails
  *
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\Log get($primaryKey, $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\Log newEntity($data = null, array $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\Log[] newEntities(array $data, array $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\Log|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\Log|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\Log patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\Log[] patchEntities($entities, array $data, array $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\Log findOrCreate($search, callable $callback = null, $options = [])
+ * @method Log get($primaryKey, $options = [])
+ * @method Log newEntity($data = null, array $options = [])
+ * @method Log[] newEntities(array $data, array $options = [])
+ * @method Log|bool save(EntityInterface $entity, $options = [])
+ * @method Log|bool saveOrFail(EntityInterface $entity, $options = [])
+ * @method Log patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method Log[] patchEntities($entities, array $data, array $options = [])
+ * @method Log findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
@@ -44,7 +46,7 @@ class LogsTable extends Table
      *
      * @return string
      */
-    public static function defaultConnectionName()
+    public static function defaultConnectionName(): string
     {
         $connection = Configure::read('JeffersonSimaoGoncalves/UserActivity.connection');
         if (!empty($connection)) {
@@ -57,11 +59,11 @@ class LogsTable extends Table
     /**
      * Initialize method
      *
-     * @param array $config The configuration for the Table.
+     * @param  array  $config  The configuration for the Table.
      *
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -72,17 +74,17 @@ class LogsTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->hasMany('LogsDetails', [
-            'foreignKey'       => 'log_id',
-            'dependent'        => true,
+            'foreignKey' => 'log_id',
+            'dependent' => true,
             'cascadeCallbacks' => true,
-            'className'        => 'JeffersonSimaoGoncalves/UserActivity.LogsDetails',
+            'className' => 'JeffersonSimaoGoncalves/UserActivity.LogsDetails',
         ]);
     }
 
     /**
      * Default validation rules.
      *
-     * @param \Cake\Validation\Validator $validator Validator instance.
+     * @param  \Cake\Validation\Validator  $validator  Validator instance.
      *
      * @return \Cake\Validation\Validator
      */
@@ -124,8 +126,8 @@ class LogsTable extends Table
     /**
      * Find latest logs
      *
-     * @param Query $query
-     * @param array $options limit default 100 record
+     * @param  Query  $query
+     * @param  array  $options  limit default 100 record
      *
      * @return \Cake\ORM\Query
      */
