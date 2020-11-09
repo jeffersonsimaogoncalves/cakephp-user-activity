@@ -34,9 +34,9 @@ class UserActivityBehavior extends Behavior
     ];
 
     /**
-     * @param array $config
+     * @param  array  $config
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
     }
@@ -44,9 +44,9 @@ class UserActivityBehavior extends Behavior
     /**
      * Do set created_by and modified_by
      *
-     * @param \Cake\Event\Event $event
-     * @param \Cake\ORM\Entity $entity
-     * @param \ArrayObject $options
+     * @param  \Cake\Event\Event  $event
+     * @param  \Cake\ORM\Entity  $entity
+     * @param  \ArrayObject  $options
      */
     public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
     {
@@ -71,9 +71,9 @@ class UserActivityBehavior extends Behavior
 
     /**
      *
-     * @param \Cake\Event\Event $event
-     * @param \Cake\ORM\Entity $entity
-     * @param \ArrayObject $options
+     * @param  \Cake\Event\Event  $event
+     * @param  \Cake\ORM\Entity  $entity
+     * @param  \ArrayObject  $options
      *
      * @throws \Cake\Database\Exception
      */
@@ -90,7 +90,7 @@ class UserActivityBehavior extends Behavior
         $listField = [];
         $tableEntity = TableRegistry::getTableLocator()->get($entity->getSource());
         $fields = $tableEntity->getSchema()->columns();
-        $primaryKey = $tableEntity->getSchema()->primaryKey();
+        $primaryKey = $tableEntity->getSchema()->getPrimaryKey();
         $primary_key = [];
         /**
          * Log all visible properties
@@ -135,7 +135,8 @@ class UserActivityBehavior extends Behavior
         $log->created_by = $this->getId();
         $log->name = $this->getName();
         $log->recycle = false;
-        $log->description = __('{0} um registro em {1} com sucesso', $entity->isNew() ? __('Criado') : __('Atualizado'), $entity->getSource());
+        $log->description = __('{0} um registro em {1} com sucesso', $entity->isNew() ? __('Criado') : __('Atualizado'),
+            $entity->getSource());
 
         if ($Logs->save($log)) {
             foreach ($listField as $field) {
@@ -159,9 +160,9 @@ class UserActivityBehavior extends Behavior
     }
 
     /**
-     * @param \Cake\Event\Event $event
-     * @param \Cake\ORM\Entity $entity
-     * @param \ArrayObject $options
+     * @param  \Cake\Event\Event  $event
+     * @param  \Cake\ORM\Entity  $entity
+     * @param  \ArrayObject  $options
      */
     public function afterDelete(Event $event, Entity $entity, ArrayObject $options)
     {
@@ -176,7 +177,7 @@ class UserActivityBehavior extends Behavior
         $listField = [];
         $tableEntity = TableRegistry::getTableLocator()->get($entity->getSource());
         $fields = $tableEntity->getSchema()->columns();
-        $primaryKey = $tableEntity->getSchema()->primaryKey();
+        $primaryKey = $tableEntity->getSchema()->getPrimaryKey();
         $primary_key = [];
         /**
          * Log all visible properties

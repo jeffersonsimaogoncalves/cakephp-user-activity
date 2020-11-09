@@ -16,23 +16,25 @@
 namespace JeffersonSimaoGoncalves\UserActivity\Model\Table;
 
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail;
 
 /**
  * LogsDetails Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Logs
  *
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail get($primaryKey, $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail newEntity($data = null, array $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail[] newEntities(array $data, array $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail[] patchEntities($entities, array $data, array $options = [])
- * @method \JeffersonSimaoGoncalves\UserActivity\Model\Entity\LogsDetail findOrCreate($search, callable $callback = null, $options = [])
+ * @method LogsDetail get($primaryKey, $options = [])
+ * @method LogsDetail newEntity($data = null, array $options = [])
+ * @method LogsDetail[] newEntities(array $data, array $options = [])
+ * @method LogsDetail|bool save(EntityInterface $entity, $options = [])
+ * @method LogsDetail|bool saveOrFail(EntityInterface $entity, $options = [])
+ * @method LogsDetail patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method LogsDetail[] patchEntities($entities, array $data, array $options = [])
+ * @method LogsDetail findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
@@ -44,7 +46,7 @@ class LogsDetailsTable extends Table
      *
      * @return string
      */
-    public static function defaultConnectionName()
+    public static function defaultConnectionName(): string
     {
         $connection = Configure::read('JeffersonSimaoGoncalves/UserActivity.connection');
         if (!empty($connection)) {
@@ -57,11 +59,11 @@ class LogsDetailsTable extends Table
     /**
      * Initialize method
      *
-     * @param array $config The configuration for the Table.
+     * @param  array  $config  The configuration for the Table.
      *
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -73,15 +75,15 @@ class LogsDetailsTable extends Table
 
         $this->belongsTo('Logs', [
             'foreignKey' => 'log_id',
-            'joinType'   => 'INNER',
-            'className'  => 'JeffersonSimaoGoncalves/UserActivity.Logs',
+            'joinType' => 'INNER',
+            'className' => 'JeffersonSimaoGoncalves/UserActivity.Logs',
         ]);
     }
 
     /**
      * Default validation rules.
      *
-     * @param \Cake\Validation\Validator $validator Validator instance.
+     * @param  \Cake\Validation\Validator  $validator  Validator instance.
      *
      * @return \Cake\Validation\Validator
      */
@@ -110,11 +112,11 @@ class LogsDetailsTable extends Table
      * Returns a rules checker object that will be used for validating
      * application integrity.
      *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @param  \Cake\ORM\RulesChecker  $rules  The rules object to be modified.
      *
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['log_id'], 'Logs'));
 
